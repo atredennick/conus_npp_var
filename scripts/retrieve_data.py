@@ -1,6 +1,9 @@
 """
 This script loops through all the NPP .tif files and downloads them
 into the data directory. This will take a while; each file is 24 GB.
+
+UPDATE: In fact, this just isn't tractable, will have to do all
+analysis in the cloud.
 """
 import sys
 import time
@@ -36,13 +39,14 @@ years = map(str, range(2001,2018)) # list of years, as strings
 fname_ext = ".tif"
 out_dir = "../data/"
 
-# Put all fnames together
-fnames_tmp = [base_fname + years for years in years] # append base name to each year
-fnames = [fnames_tmp + fname_ext for fnames_tmp in fnames_tmp] # append ftype to each fname
+# # Put all fnames together
+# fnames_tmp = [base_fname + years for years in years] # append base name to each year
+# fnames = [fnames_tmp + fname_ext for fnames_tmp in fnames_tmp] # append ftype to each fname
 
-# Loop over files, download, and save
-for dofile in fnames[0:1]:
-    out_file = out_dir + dofile
-    read_url = base_url + dofile
-    #print(read_url)
-    urllib.urlretrieve(read_url, out_file, reporthook)
+# # Loop over files, download, and save
+# for dofile in fnames[0:1]:
+#     out_file = out_dir + dofile
+#     read_url = base_url + dofile
+#     #print(read_url)
+#     urllib.urlretrieve(read_url, out_file, reporthook)
+    
