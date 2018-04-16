@@ -8,6 +8,8 @@ Author: Andrew Tredennick (atredenn@gmail.com)
 
 import numpy as np
 import matplotlib as plt
+import scipy as sp
+import skimage
 
 # Make a big time series of 'rasters', here a numpy array
 nyears = 5
@@ -28,6 +30,8 @@ def generate_ar1 (mat, ntimes, beta = 0.8):
         the_array: a 3D array with size = (mat.shape[0], mat.shape[1], ntimes)
             representing a time-evolving spatial field
     '''
+    assert mat.ndim == 2, 'mat is not a 2D array'
+    
     do_cols = mat.shape[1]
     do_rows = mat.shape[0]
     the_array = np.zeros(shape = (do_rows, do_cols, ntimes))
@@ -43,11 +47,26 @@ data_mat = generate_ar1(start_matrix, nyears, 0.8)
 
 # Define a function for calculating temporal variance, 
 # given a spatial scale
+def shrink(data, rows, cols):
+    return data.reshape(rows, data.shape[0]/rows, cols, data.shape[1]/cols).sum(axis=1).sum(axis=2)
 
-
+def calc_variance (array, factor = 1):
+    assert array.ndim == 3, 'array_obj is not a 3D array'
+    # TODO: test that factor one cause errors for shrinking array
     
+    if factor == 1:
+        out_var = np.var(array, axis = 2)
+    
+    if factor != 1: 
+        new_array = np.zeros(shape = (array.shape[0]/factor, array.shape[1]/factor, array.shape[2]))
+        
+        for i in range(array.shape[2]):
+            tmp_array = array[:,:,i]
+            new_array[:,:,i] = shrink(tmp_array, tmp_array.shape[0]/factor, tmp_array.shape[1]/factor)
+        
+        out_var = np.var(new_array, axis = 2)
+    
+    return out_var
 
-
-
-
-
+# Test and plot real quick
+plt.pyplot.imshow(calc_variance(data_mat, factor = 5))
