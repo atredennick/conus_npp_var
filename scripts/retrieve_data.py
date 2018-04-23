@@ -49,4 +49,23 @@ out_dir = "../data/"
 #     read_url = base_url + dofile
 #     #print(read_url)
 #     urllib.urlretrieve(read_url, out_file, reporthook)
+
+
+## For reading in chunks...
+import gdal
+ds = gdal.Open('input.tif', gdal.GA_ReadOnly)
+rb = ds.GetRasterBand(1)
+xsize = rb.XSize
+ysize = rb.YSize
+ystep = ysize / 10
+yresidual = ysize - (ystep * 10)
+
+for i in range(10):
+    if i != 9:
+        img_part = rb.ReadAsArray(0, ystep * i, xsize, ystep)
+    else:
+        img_part = rb.ReadAsArray(0, ystep * i, xsize, ystep + yresidual)
+    # do something with img_part
+
+ds = None
     
